@@ -1,7 +1,7 @@
 # F3Nope
 
-[![Minecraft Versions](https://img.shields.io/badge/Minecraft-1.14.4--1.21.5+-brightgreen?style=flat-square)](https://github.com/OfficiallySp/f3nope/releases)
-[![Java](https://img.shields.io/badge/Java-8%20|%2016%20|%2017%20|%2021-orange?style=flat-square)](https://github.com/OfficiallySp/f3nope)
+[![Minecraft Versions](https://img.shields.io/badge/Minecraft-1.20.2--1.21.5+-brightgreen?style=flat-square)](https://github.com/OfficiallySp/f3nope/releases)
+[![Java](https://img.shields.io/badge/Java-17%20|%2021-orange?style=flat-square)](https://github.com/OfficiallySp/f3nope)
 [![GitHub Actions](https://img.shields.io/github/actions/workflow/status/OfficiallySp/f3nope/build.yml?style=flat-square)](https://github.com/OfficiallySp/f3nope/actions)
 [![License](https://img.shields.io/badge/License-MPL--2.0-blue?style=flat-square)](https://github.com/OfficiallySp/f3nope/blob/main/LICENSE)
 
