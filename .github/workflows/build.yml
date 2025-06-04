@@ -24,111 +24,111 @@ jobs:
           {
             version: "1.14.4",
             yarn: "1.14.4+build.18",
-            loader: "0.7.4+build.177",
-            fabric: "0.4.1+build.245-1.14",
+            loader: "0.16.14",
+            fabric: "0.28.5+1.14",
             java: "8",
-            loom: "0.2.6-SNAPSHOT"
+            loom: "1.10-SNAPSHOT"
           },
           # Minecraft 1.15.x
           {
             version: "1.15.2",
             yarn: "1.15.2+build.17",
-            loader: "0.7.8+build.189",
-            fabric: "0.5.1+build.294-1.15",
+            loader: "0.16.14",
+            fabric: "0.28.5+1.15",
             java: "8",
-            loom: "0.2.6-SNAPSHOT"
+            loom: "1.10-SNAPSHOT"
           },
           # Minecraft 1.16.x (Major update)
           {
             version: "1.16.5",
             yarn: "1.16.5+build.10",
-            loader: "0.11.6",
+            loader: "0.16.14",
             fabric: "0.42.0+1.16",
-            java: "8",
-            loom: "0.8-SNAPSHOT"
+            java: "17",
+            loom: "1.10-SNAPSHOT"
           },
           # Minecraft 1.17.x (Java 16+ requirement)
           {
             version: "1.17.1",
             yarn: "1.17.1+build.65",
-            loader: "0.12.12",
+            loader: "0.16.14",
             fabric: "0.46.1+1.17",
-            java: "16",
-            loom: "0.10-SNAPSHOT"
+            java: "17",
+            loom: "1.10-SNAPSHOT"
           },
           # Minecraft 1.18.x (World generation overhaul)
           {
             version: "1.18.2",
             yarn: "1.18.2+build.4",
-            loader: "0.14.9",
-            fabric: "0.76.0+1.18.2",
+            loader: "0.16.14",
+            fabric: "0.77.0+1.18.2",
             java: "17",
-            loom: "0.12-SNAPSHOT"
+            loom: "1.10-SNAPSHOT"
           },
           # Minecraft 1.19.x (Chat signing and reporting)
           {
             version: "1.19.4",
             yarn: "1.19.4+build.2",
-            loader: "0.14.19",
-            fabric: "0.83.0+1.19.4",
+            loader: "0.16.14",
+            fabric: "0.87.2+1.19.4",
             java: "17",
-            loom: "1.2-SNAPSHOT"
+            loom: "1.10-SNAPSHOT"
           },
           # Minecraft 1.20.x (Trails & Tales)
           {
             version: "1.20.2",
             yarn: "1.20.2+build.4",
-            loader: "0.14.24",
-            fabric: "0.91.1+1.20.2",
+            loader: "0.16.14",
+            fabric: "0.91.6+1.20.2",
             java: "17",
-            loom: "1.4-SNAPSHOT"
+            loom: "1.10-SNAPSHOT"
           },
           {
             version: "1.20.4",
             yarn: "1.20.4+build.3",
-            loader: "0.15.3",
-            fabric: "0.91.0+1.20.4",
+            loader: "0.16.14",
+            fabric: "0.97.2+1.20.4",
             java: "17",
-            loom: "1.4-SNAPSHOT"
+            loom: "1.10-SNAPSHOT"
           },
           {
             version: "1.20.6",
-            yarn: "1.20.6+build.1",
-            loader: "0.15.11",
-            fabric: "0.100.7+1.20.6",
+            yarn: "1.20.6+build.3",
+            loader: "0.16.14",
+            fabric: "0.100.8+1.20.6",
             java: "21",
-            loom: "1.6-SNAPSHOT"
+            loom: "1.10-SNAPSHOT"
           },
           # Minecraft 1.21.x (Tricky Trials)
           {
             version: "1.21.1",
             yarn: "1.21.1+build.3",
-            loader: "0.16.5",
-            fabric: "0.103.0+1.21.1",
+            loader: "0.16.14",
+            fabric: "0.116.1+1.21.1",
             java: "21",
-            loom: "1.7-SNAPSHOT"
+            loom: "1.10-SNAPSHOT"
           },
           {
             version: "1.21.3",
             yarn: "1.21.3+build.2",
-            loader: "0.16.7",
-            fabric: "0.110.0+1.21.3",
+            loader: "0.16.14",
+            fabric: "0.114.1+1.21.3",
             java: "21",
-            loom: "1.8-SNAPSHOT"
+            loom: "1.10-SNAPSHOT"
           },
           {
             version: "1.21.4",
-            yarn: "1.21.4+build.1",
-            loader: "0.16.9",
+            yarn: "1.21.4+build.8",
+            loader: "0.16.14",
             fabric: "0.119.3+1.21.4",
             java: "21",
-            loom: "1.8-SNAPSHOT"
+            loom: "1.10-SNAPSHOT"
           },
           {
             version: "1.21.5",
             yarn: "1.21.5+build.1",
-            loader: "0.16.10",
-            fabric: "0.119.5+1.21.5",
+            loader: "0.16.14",
+            fabric: "0.126.0+1.21.5",
             java: "21",
             loom: "1.10-SNAPSHOT"
           }
