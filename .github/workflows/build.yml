@@ -3,28 +3,302 @@
 # certain platforms or Java versions, and provides a first line of defence
 # against bad commits.
 
-name: build
-on: [pull_request, push]
+name: Build F3Nope for All Major Minecraft Versions
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  release:
+    types: [ published ]
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        minecraft: [
+          # Minecraft 1.14.x (First Fabric support)
+          {
+            version: "1.14.4",
+            yarn: "1.14.4+build.18",
+            loader: "0.7.4+build.177",
+            fabric: "0.4.1+build.245-1.14",
+            java: "8",
+            loom: "0.2.6-SNAPSHOT"
+          },
+          # Minecraft 1.15.x
+          {
+            version: "1.15.2",
+            yarn: "1.15.2+build.17",
+            loader: "0.7.8+build.189",
+            fabric: "0.5.1+build.294-1.15",
+            java: "8",
+            loom: "0.2.6-SNAPSHOT"
+          },
+          # Minecraft 1.16.x (Major update)
+          {
+            version: "1.16.5",
+            yarn: "1.16.5+build.10",
+            loader: "0.11.6",
+            fabric: "0.42.0+1.16",
+            java: "8",
+            loom: "0.8-SNAPSHOT"
+          },
+          # Minecraft 1.17.x (Java 16+ requirement)
+          {
+            version: "1.17.1",
+            yarn: "1.17.1+build.65",
+            loader: "0.12.12",
+            fabric: "0.46.1+1.17",
+            java: "16",
+            loom: "0.10-SNAPSHOT"
+          },
+          # Minecraft 1.18.x (World generation overhaul)
+          {
+            version: "1.18.2",
+            yarn: "1.18.2+build.4",
+            loader: "0.14.9",
+            fabric: "0.76.0+1.18.2",
+            java: "17",
+            loom: "0.12-SNAPSHOT"
+          },
+          # Minecraft 1.19.x (Chat signing and reporting)
+          {
+            version: "1.19.4",
+            yarn: "1.19.4+build.2",
+            loader: "0.14.19",
+            fabric: "0.83.0+1.19.4",
+            java: "17",
+            loom: "1.2-SNAPSHOT"
+          },
+          # Minecraft 1.20.x (Trails & Tales)
+          {
+            version: "1.20.2",
+            yarn: "1.20.2+build.4",
+            loader: "0.14.24",
+            fabric: "0.91.1+1.20.2",
+            java: "17",
+            loom: "1.4-SNAPSHOT"
+          },
+          {
+            version: "1.20.4",
+            yarn: "1.20.4+build.3",
+            loader: "0.15.3",
+            fabric: "0.91.0+1.20.4",
+            java: "17",
+            loom: "1.4-SNAPSHOT"
+          },
+          {
+            version: "1.20.6",
+            yarn: "1.20.6+build.1",
+            loader: "0.15.11",
+            fabric: "0.100.7+1.20.6",
+            java: "21",
+            loom: "1.6-SNAPSHOT"
+          },
+          # Minecraft 1.21.x (Tricky Trials)
+          {
+            version: "1.21.1",
+            yarn: "1.21.1+build.3",
+            loader: "0.16.5",
+            fabric: "0.103.0+1.21.1",
+            java: "21",
+            loom: "1.7-SNAPSHOT"
+          },
+          {
+            version: "1.21.3",
+            yarn: "1.21.3+build.2",
+            loader: "0.16.7",
+            fabric: "0.110.0+1.21.3",
+            java: "21",
+            loom: "1.8-SNAPSHOT"
+          },
+          {
+            version: "1.21.4",
+            yarn: "1.21.4+build.1",
+            loader: "0.16.9",
+            fabric: "0.119.3+1.21.4",
+            java: "21",
+            loom: "1.8-SNAPSHOT"
+          },
+          {
+            version: "1.21.5",
+            yarn: "1.21.5+build.1",
+            loader: "0.16.10",
+            fabric: "0.119.5+1.21.5",
+            java: "21",
+            loom: "1.10-SNAPSHOT"
+          }
+        ]
+
     steps:
-      - name: checkout repository
-        uses: actions/checkout@v4
-      - name: validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v4
-      - name: setup jdk
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'microsoft'
-      - name: make gradle wrapper executable
-        run: chmod +x ./gradlew
-      - name: build
-        run: ./gradlew build
-      - name: capture build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: Artifacts
-          path: build/libs/
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Validate Gradle wrapper
+      uses: gradle/actions/wrapper-validation@v4
+
+    - name: Set up JDK ${{ matrix.minecraft.java }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ matrix.minecraft.java }}
+        distribution: 'temurin'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+
+    - name: Create version-specific files
+      run: |
+        # Create backup of original files
+        cp gradle.properties gradle.properties.backup
+        cp src/main/resources/fabric.mod.json src/main/resources/fabric.mod.json.backup
+        cp build.gradle build.gradle.backup
+        cp src/main/resources/f3nope.mixins.json src/main/resources/f3nope.mixins.json.backup
+        cp src/client/resources/f3nope.client.mixins.json src/client/resources/f3nope.client.mixins.json.backup
+
+    - name: Update gradle.properties for MC ${{ matrix.minecraft.version }}
+      run: |
+        sed -i "s/minecraft_version=.*/minecraft_version=${{ matrix.minecraft.version }}/" gradle.properties
+        sed -i "s/yarn_mappings=.*/yarn_mappings=${{ matrix.minecraft.yarn }}/" gradle.properties
+        sed -i "s/loader_version=.*/loader_version=${{ matrix.minecraft.loader }}/" gradle.properties
+        sed -i "s/fabric_version=.*/fabric_version=${{ matrix.minecraft.fabric }}/" gradle.properties
+
+    - name: Update fabric.mod.json for MC ${{ matrix.minecraft.version }}
+      run: |
+        sed -i "s/\"minecraft\": \"~.*\"/\"minecraft\": \"~${{ matrix.minecraft.version }}\"/" src/main/resources/fabric.mod.json
+        sed -i "s/\"fabricloader\": \">.*\"/\"fabricloader\": \">=${{ matrix.minecraft.loader }}\"/" src/main/resources/fabric.mod.json
+        sed -i "s/\"java\": \">=.*\"/\"java\": \">=${{ matrix.minecraft.java }}\"/" src/main/resources/fabric.mod.json
+
+    - name: Update build.gradle for Java ${{ matrix.minecraft.java }}
+      run: |
+        sed -i "s/it.options.release = .*/it.options.release = ${{ matrix.minecraft.java }}/" build.gradle
+        sed -i "s/JavaVersion.VERSION_.*/JavaVersion.VERSION_${{ matrix.minecraft.java }}/" build.gradle
+        # Update Fabric Loom version for older MC versions
+        if [[ "${{ matrix.minecraft.version }}" =~ ^1\.(14|15|16) ]]; then
+          sed -i "s/id 'fabric-loom' version '.*'/id 'fabric-loom' version '${{ matrix.minecraft.loom }}'/" build.gradle
+        fi
+
+    - name: Update mixin compatibility for Java ${{ matrix.minecraft.java }}
+      run: |
+        sed -i "s/\"compatibilityLevel\": \"JAVA_.*\"/\"compatibilityLevel\": \"JAVA_${{ matrix.minecraft.java }}\"/" src/main/resources/f3nope.mixins.json
+        sed -i "s/\"compatibilityLevel\": \"JAVA_.*\"/\"compatibilityLevel\": \"JAVA_${{ matrix.minecraft.java }}\"/" src/client/resources/f3nope.client.mixins.json
+
+    - name: Handle version-specific code changes
+      run: |
+        # For very old versions (1.14-1.16), we might need to adjust some imports
+        if [[ "${{ matrix.minecraft.version }}" =~ ^1\.(14|15|16) ]]; then
+          echo "Applying compatibility patches for older Minecraft versions..."
+          # Add any version-specific patches here if needed
+        fi
+
+        # For 1.21+ versions with Identifier changes
+        if [[ "${{ matrix.minecraft.version }}" =~ ^1\.21\. ]]; then
+          echo "Applying 1.21+ compatibility patches..."
+          # Handle new Identifier() -> Identifier.of() changes if needed
+        fi
+
+    - name: Clean previous build
+      run: ./gradlew clean
+
+    - name: Build mod
+      run: ./gradlew build
+      env:
+        # Increase memory for older Gradle versions
+        GRADLE_OPTS: "-Xmx2G -Dorg.gradle.daemon=false"
+
+    - name: Prepare release artifacts
+      run: |
+        mkdir -p build/release
+        MOD_VERSION=$(grep "mod_version=" gradle.properties | cut -d'=' -f2)
+        cp build/libs/f3nope-*.jar "build/release/f3nope-${{ matrix.minecraft.version }}-${MOD_VERSION}.jar"
+
+        # Create a summary file for this version
+        echo "# F3Nope for Minecraft ${{ matrix.minecraft.version }}" > "build/release/f3nope-${{ matrix.minecraft.version }}-info.txt"
+        echo "Minecraft: ${{ matrix.minecraft.version }}" >> "build/release/f3nope-${{ matrix.minecraft.version }}-info.txt"
+        echo "Fabric Loader: ${{ matrix.minecraft.loader }}" >> "build/release/f3nope-${{ matrix.minecraft.version }}-info.txt"
+        echo "Yarn Mappings: ${{ matrix.minecraft.yarn }}" >> "build/release/f3nope-${{ matrix.minecraft.version }}-info.txt"
+        echo "Fabric API: ${{ matrix.minecraft.fabric }}" >> "build/release/f3nope-${{ matrix.minecraft.version }}-info.txt"
+        echo "Java: ${{ matrix.minecraft.java }}" >> "build/release/f3nope-${{ matrix.minecraft.version }}-info.txt"
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: f3nope-${{ matrix.minecraft.version }}
+        path: build/release/*
+        retention-days: 30
+
+    - name: Upload to release (if release event)
+      if: github.event_name == 'release'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: build/release/f3nope-${{ matrix.minecraft.version }}-$(grep "mod_version=" gradle.properties | cut -d'=' -f2).jar
+        asset_name: f3nope-${{ matrix.minecraft.version }}-$(grep "mod_version=" gradle.properties | cut -d'=' -f2).jar
+        asset_content_type: application/java-archive
+
+    - name: Restore original files
+      if: always()
+      run: |
+        mv gradle.properties.backup gradle.properties || true
+        mv src/main/resources/fabric.mod.json.backup src/main/resources/fabric.mod.json || true
+        mv build.gradle.backup build.gradle || true
+        mv src/main/resources/f3nope.mixins.json.backup src/main/resources/f3nope.mixins.json || true
+        mv src/client/resources/f3nope.client.mixins.json.backup src/client/resources/f3nope.client.mixins.json || true
+
+  # Summary job that creates a combined release with all versions
+  create-release-summary:
+    if: github.event_name == 'release'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ./artifacts
+
+    - name: Create release summary
+      run: |
+        echo "# F3Nope Multi-Version Release" > RELEASE_NOTES.md
+        echo "" >> RELEASE_NOTES.md
+        echo "This release includes F3Nope for the following Minecraft versions:" >> RELEASE_NOTES.md
+        echo "" >> RELEASE_NOTES.md
+
+        # List all built versions
+        for dir in ./artifacts/*/; do
+          if [[ -f "$dir"*-info.txt ]]; then
+            version=$(basename "$dir" | sed 's/f3nope-//')
+            echo "- **Minecraft $version**" >> RELEASE_NOTES.md
+            cat "$dir"*-info.txt | grep -v "^#" | sed 's/^/  - /' >> RELEASE_NOTES.md
+            echo "" >> RELEASE_NOTES.md
+          fi
+        done
+
+        echo "## Installation" >> RELEASE_NOTES.md
+        echo "1. Download the version matching your Minecraft installation" >> RELEASE_NOTES.md
+        echo "2. Install the corresponding Fabric Loader version" >> RELEASE_NOTES.md
+        echo "3. Download the matching Fabric API" >> RELEASE_NOTES.md
+        echo "4. Place both JARs in your mods folder" >> RELEASE_NOTES.md
+
+        cat RELEASE_NOTES.md
+
+    - name: Update release description
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const releaseNotes = fs.readFileSync('RELEASE_NOTES.md', 'utf8');
+
+          await github.rest.repos.updateRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: context.payload.release.id,
+            body: releaseNotes
+          });

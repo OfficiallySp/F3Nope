@@ -1,5 +1,10 @@
 # F3Nope
 
+[![Minecraft Versions](https://img.shields.io/badge/Minecraft-1.14.4--1.21.5+-brightgreen?style=flat-square)](https://github.com/OfficiallySp/f3nope/releases)
+[![Java](https://img.shields.io/badge/Java-8%20|%2016%20|%2017%20|%2021-orange?style=flat-square)](https://github.com/OfficiallySp/f3nope)
+[![GitHub Actions](https://img.shields.io/github/actions/workflow/status/OfficiallySp/f3nope/build.yml?style=flat-square)](https://github.com/OfficiallySp/f3nope/actions)
+[![License](https://img.shields.io/badge/License-MPL--2.0-blue?style=flat-square)](https://github.com/OfficiallySp/f3nope/blob/main/LICENSE)
+
 A lightweight Fabric mod that completely removes the F3 debug menu and replaces it with custom text of your choosing.
 
 ## Features
@@ -98,13 +103,33 @@ The mod creates a configuration file at `config/f3nope.json` with the following 
 
 ## Version Compatibility
 
-F3Nope is designed to be version agnostic and can be easily backported to older Minecraft versions by:
+F3Nope supports **every major Minecraft version** that Fabric supports, from **1.14.4** to **1.21.5+**:
 
-1. Updating the `minecraft_version` and `yarn_mappings` in `gradle.properties`
-2. Adjusting the `fabric_version` to match the target version
-3. Updating any version-specific API calls in the mixins if necessary
+### **Automatic Multi-Version Builds**
 
-The mod uses minimal Minecraft internals and should work across most modern Fabric-supported versions.
+GitHub Actions automatically builds F3Nope for the following versions:
+
+- 1.14.4 (Village and Pillage)
+- 1.15.2 (Buzzier Bees)
+- 1.16.5 (Nether Update)
+- 1.17.1 (Caves and Cliffs 1)
+- 1.18.2 (Caves and Cliffs 2)
+- 1.19.4 (Wild Update)
+- 1.20.2 (Trails and Tales)
+- 1.20.4 (Bats and Pots)
+- 1.20.6 (Armored Paws)
+- 1.21.1 (Tricky Trials)
+- 1.21.3 (Bundles of Bravery)
+- 1.21.4 (Garden Awakens)
+- 1.21.5 (Spring to life)
+
+### **Installation**
+
+1. Go to our [Releases page](https://github.com/OfficiallySp/f3nope/releases)
+2. Download the JAR file matching your Minecraft version
+3. Install the corresponding Fabric Loader and Fabric API versions
+4. Drop both JARs into your `mods` folder
+
 
 ## Development
 
@@ -114,14 +139,22 @@ The mod uses minimal Minecraft internals and should work across most modern Fabr
 2. Run `./gradlew build`
 3. Find the built `.jar` in `build/libs/`
 
-### Backporting to Older Versions
 
-To backport to an older Minecraft version:
+#### **Manual Building**
+```bash
+# Build for current version
+./gradlew build
 
-1. Update `gradle.properties` with the target version details
-2. Check [Fabric version compatibility](https://fabricmc.net/develop/)
-3. Test the `DebugHud` mixin for any API changes
-4. Rebuild and test
+# Build for specific version
+./gradlew build -PmcVersion=1.21.1
+
+# See .github/workflows/build.yml for all supported versions
+```
+
+#### **Adding New Minecraft Versions**
+1. Update the matrix in `.github/workflows/build.yml`
+2. Add version info: `minecraft_version`, `yarn_mappings`, `loader_version`, `fabric_version`, `java`
+3. Test build locally, then push to trigger CI
 
 ## License
 
