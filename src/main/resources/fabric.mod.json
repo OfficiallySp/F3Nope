@@ -5,13 +5,13 @@
 	"name": "F3Nope",
 	"description": "Completely remove the F3 debug menu and replace it with custom text of your choosing. Fully configurable via commands or config file.",
 	"authors": [
-		"Your Name"
+		"OfficiallySp"
 	],
 	"contact": {
-		"homepage": "https://github.com/yourname/f3nope",
-		"sources": "https://github.com/yourname/f3nope"
+		"homepage": "https://officiallysp.net",
+		"sources": "https://github.com/OfficiallySp/f3nope"
 	},
-	"license": "MIT",
+	"license": "MPL-2.0",
 	"icon": "assets/f3nope/icon.png",
 	"environment": "*",
 	"entrypoints": {
