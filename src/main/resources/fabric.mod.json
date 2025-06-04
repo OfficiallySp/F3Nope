@@ -1,41 +1,40 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "f3nope",
 	"version": "${version}",
-	"name": "Example mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "F3Nope",
+	"description": "Completely remove the F3 debug menu and replace it with custom text of your choosing. Fully configurable via commands or config file.",
 	"authors": [
-		"Me!"
+		"Your Name"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/yourname/f3nope",
+		"sources": "https://github.com/yourname/f3nope"
 	},
-	"license": "CC0-1.0",
-	"icon": "assets/modid/icon.png",
+	"license": "MIT",
+	"icon": "assets/f3nope/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.ExampleMod"
+			"com.f3nope.F3Nope"
 		],
 		"client": [
-			"com.example.ExampleModClient"
+			"com.f3nope.F3NopeClient"
 		]
 	},
 	"mixins": [
-		"modid.mixins.json",
+		"f3nope.mixins.json",
 		{
-			"config": "modid.client.mixins.json",
+			"config": "f3nope.client.mixins.json",
 			"environment": "client"
 		}
 	],
 	"depends": {
-		"fabricloader": ">=0.16.10",
-		"minecraft": "~1.21.5",
-		"java": ">=21",
+		"fabricloader": ">=0.14.21",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"another-mod": "*"
 	}
 }
