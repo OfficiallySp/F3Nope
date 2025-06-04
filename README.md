@@ -103,18 +103,12 @@ The mod creates a configuration file at `config/f3nope.json` with the following 
 
 ## Version Compatibility
 
-F3Nope supports **every major Minecraft version** that Fabric supports, from **1.14.4** to **1.21.5+**:
+F3Nope supports **every major Minecraft version** that Fabric supports, from **1.20.2** to **1.21.5+**:
 
 ### **Automatic Multi-Version Builds**
 
 GitHub Actions automatically builds F3Nope for the following versions:
 
-- 1.14.4 (Village and Pillage)
-- 1.15.2 (Buzzier Bees)
-- 1.16.5 (Nether Update)
-- 1.17.1 (Caves and Cliffs 1)
-- 1.18.2 (Caves and Cliffs 2)
-- 1.19.4 (Wild Update)
 - 1.20.2 (Trails and Tales)
 - 1.20.4 (Bats and Pots)
 - 1.20.6 (Armored Paws)

@@ -162,7 +162,18 @@ jobs:
     - name: Prepare release artifacts
       run: |
         mkdir -p build/release
-        MOD_VERSION=$(grep "mod_version=" gradle.properties | cut -d'=' -f2)
+
+        # Extract mod version with better error handling
+        MOD_VERSION=$(grep "mod_version=" gradle.properties | cut -d'=' -f2 | tr -d ' \t\r\n')
+
+        if [[ -z "$MOD_VERSION" ]]; then
+          echo "ERROR: Could not extract mod_version from gradle.properties"
+          echo "gradle.properties content:"
+          cat gradle.properties
+          exit 1
+        fi
+
+        echo "Extracted MOD_VERSION: '$MOD_VERSION'"
 
         # Debug: List all files in build directory
         echo "=== Build directory contents ==="
@@ -181,7 +192,29 @@ jobs:
         fi
 
         echo "Found JAR file: $JAR_FILE"
-        cp "$JAR_FILE" "build/release/f3nope-${{ matrix.minecraft.version }}-${MOD_VERSION}.jar"
+
+        # Create release JAR name and verify it
+        RELEASE_JAR="f3nope-${{ matrix.minecraft.version }}-${MOD_VERSION}.jar"
+        echo "Creating release JAR: '$RELEASE_JAR'"
+
+        # Copy the file
+        cp "$JAR_FILE" "build/release/${RELEASE_JAR}"
+
+        # Verify the file was created
+        if [[ ! -f "build/release/${RELEASE_JAR}" ]]; then
+          echo "ERROR: Failed to create release JAR file"
+          exit 1
+        fi
+
+        # Export variables for subsequent steps
+        {
+          echo "MOD_VERSION=${MOD_VERSION}"
+          echo "RELEASE_JAR=${RELEASE_JAR}"
+        } >> $GITHUB_ENV
+
+        # Also save to files as backup method
+        echo "${MOD_VERSION}" > build/release/mod_version.txt
+        echo "${RELEASE_JAR}" > build/release/release_jar_name.txt
 
         # Create a summary file for this version
         echo "# F3Nope for Minecraft ${{ matrix.minecraft.version }}" > "build/release/f3nope-${{ matrix.minecraft.version }}-info.txt"
@@ -193,6 +226,11 @@ jobs:
 
         echo "=== Final release artifacts ==="
         ls -la build/release/
+        echo "Release JAR name: ${RELEASE_JAR}"
+
+        # Debug: Show what we're exporting
+        echo "Exported MOD_VERSION: ${MOD_VERSION}"
+        echo "Exported RELEASE_JAR: ${RELEASE_JAR}"
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
@@ -201,16 +239,67 @@ jobs:
         path: build/release/*
         retention-days: 30
 
+    - name: Debug environment variables (if release event)
+      if: github.event_name == 'release'
+      run: |
+        echo "=== Environment Variables Debug ==="
+        echo "MOD_VERSION from env: '${{ env.MOD_VERSION }}'"
+        echo "RELEASE_JAR from env: '${{ env.RELEASE_JAR }}'"
+
+        echo "=== Reading from backup files ==="
+        if [[ -f "build/release/mod_version.txt" ]]; then
+          MOD_VERSION_FILE=$(cat build/release/mod_version.txt)
+          echo "MOD_VERSION from file: '$MOD_VERSION_FILE'"
+        fi
+
+        if [[ -f "build/release/release_jar_name.txt" ]]; then
+          RELEASE_JAR_FILE=$(cat build/release/release_jar_name.txt)
+          echo "RELEASE_JAR from file: '$RELEASE_JAR_FILE'"
+        fi
+
+        echo "=== All files in build/release/ ==="
+        ls -la build/release/ || echo "build/release/ directory doesn't exist"
+
+        echo "=== Testing file path resolution ==="
+        echo "Expected file path (env): 'build/release/${{ env.RELEASE_JAR }}'"
+        if [[ -f "build/release/release_jar_name.txt" ]]; then
+          RELEASE_JAR_FILE=$(cat build/release/release_jar_name.txt)
+          echo "Expected file path (file): 'build/release/${RELEASE_JAR_FILE}'"
+
+          if [[ -f "build/release/${RELEASE_JAR_FILE}" ]]; then
+            echo "✓ Release JAR file exists (using file method)"
+            ls -la "build/release/${RELEASE_JAR_FILE}"
+          else
+            echo "✗ Release JAR file does not exist (using file method)"
+          fi
+        fi
+
     - name: Upload to release (if release event)
       if: github.event_name == 'release'
-      uses: actions/upload-release-asset@v1
+      run: |
+        # Recreate the variables in this step to ensure they're available
+        MOD_VERSION=$(grep "mod_version=" gradle.properties | cut -d'=' -f2 | tr -d ' \t\r\n')
+        RELEASE_JAR="f3nope-${{ matrix.minecraft.version }}-${MOD_VERSION}.jar"
+
+        echo "=== Upload Step Debug ==="
+        echo "MOD_VERSION: '$MOD_VERSION'"
+        echo "RELEASE_JAR: '$RELEASE_JAR'"
+        echo "File path: 'build/release/${RELEASE_JAR}'"
+
+        # Verify the file exists
+        if [[ ! -f "build/release/${RELEASE_JAR}" ]]; then
+          echo "ERROR: Release JAR file not found!"
+          echo "Contents of build/release/:"
+          ls -la build/release/
+          exit 1
+        fi
+
+        echo "✓ Release JAR file found, proceeding with upload..."
+
+        # Use the GitHub CLI to upload the release asset
+        gh release upload ${{ github.event.release.tag_name }} "build/release/${RELEASE_JAR}" --clobber
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: build/release/f3nope-${{ matrix.minecraft.version }}-$(grep "mod_version=" gradle.properties | cut -d'=' -f2).jar
-        asset_name: f3nope-${{ matrix.minecraft.version }}-$(grep "mod_version=" gradle.properties | cut -d'=' -f2).jar
-        asset_content_type: application/java-archive
 
     - name: Restore original files
       if: always()
