@@ -23,11 +23,21 @@ public class F3NopeConfig {
     public int textColor = 0xFFFFFF; // White
     public boolean textShadow = true;
 
+    // Placeholder settings
+    public boolean enablePlaceholders = true;
+    public boolean showFps = true;
+    public boolean showPing = true;
+    public boolean showDateTime = true;
+    public boolean showVersions = true;
+
     public F3NopeConfig() {
-        // Default custom text
-        customTextLines.add("F3Nope Mod");
-        customTextLines.add("Debug info hidden");
-        customTextLines.add("Configure with /f3nope");
+        // Default custom text with placeholders
+        customTextLines.add("🚫 F3? More like F3-NOPE! v%mod_version%");
+        customTextLines.add("⚡ Frames: %fps% | Lag: %ping%ms (probably your internet)");
+        customTextLines.add("⏰ It's %time% on %date% - time flies when you're mining!");
+        customTextLines.add("🎮 Running MC %mc_version% with Fabric %fabric_version%");
+        customTextLines.add("💡 Pro tip: Use /f3nope to customize this epic display");
+        customTextLines.add("🎯 Debug info? We don't do that here.");
     }
 
     public static F3NopeConfig load() {
@@ -68,5 +78,10 @@ public class F3NopeConfig {
         this.textY = newConfig.textY;
         this.textColor = newConfig.textColor;
         this.textShadow = newConfig.textShadow;
+        this.enablePlaceholders = newConfig.enablePlaceholders;
+        this.showFps = newConfig.showFps;
+        this.showPing = newConfig.showPing;
+        this.showDateTime = newConfig.showDateTime;
+        this.showVersions = newConfig.showVersions;
     }
 }

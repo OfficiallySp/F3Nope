@@ -2,6 +2,7 @@ package com.f3nope.mixin.client;
 
 import com.f3nope.F3Nope;
 import com.f3nope.F3NopeConfig;
+import com.f3nope.util.PlaceholderUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.DebugHud;
@@ -44,7 +45,9 @@ public class DebugHudMixin {
 
         for (String line : config.customTextLines) {
             if (line != null && !line.isEmpty()) {
-                Text text = Text.literal(line);
+                // Process placeholders before rendering
+                String processedLine = PlaceholderUtil.replacePlaceholders(line, config, this.client);
+                Text text = Text.literal(processedLine);
 
                 if (config.textShadow) {
                     context.drawTextWithShadow(this.client.textRenderer, text, config.textX, y, config.textColor);
@@ -56,7 +59,6 @@ public class DebugHudMixin {
             }
         }
     }
-
     // Note: The shouldShowDebugHud method may not exist in all Minecraft versions
     // The render method injection above should be sufficient for most use cases
 }

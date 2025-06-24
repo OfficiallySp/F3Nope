@@ -82,6 +82,14 @@ jobs:
             fabric: "0.126.0+1.21.5",
             java: "21",
             loom: "1.10-SNAPSHOT"
+          },
+          {
+            version: "1.21.6",
+            yarn: "1.21.6+build.1",
+            loader: "0.16.14",
+            fabric: "0.128.0+1.21.6",
+            java: "21",
+            loom: "1.10-SNAPSHOT"
           }
         ]
 

@@ -1,6 +1,6 @@
 # F3Nope
 
-[![Minecraft Versions](https://img.shields.io/badge/Minecraft-1.20.2--1.21.5+-brightgreen?style=flat-square)](https://github.com/OfficiallySp/f3nope/releases)
+[![Minecraft Versions](https://img.shields.io/badge/Minecraft-1.20.2--1.21.6+-brightgreen?style=flat-square)](https://github.com/OfficiallySp/f3nope/releases)
 [![Java](https://img.shields.io/badge/Java-17%20|%2021-orange?style=flat-square)](https://github.com/OfficiallySp/f3nope)
 [![GitHub Actions](https://img.shields.io/github/actions/workflow/status/OfficiallySp/f3nope/build.yml?style=flat-square)](https://github.com/OfficiallySp/f3nope/actions)
 [![License](https://img.shields.io/badge/License-MPL--2.0-blue?style=flat-square)](https://github.com/OfficiallySp/f3nope/blob/main/LICENSE)
@@ -36,6 +36,11 @@ All commands require OP level 2 (operator privileges).
 #### Toggle Settings
 - `/f3nope toggle hideVanillaDebug <true|false>` - Hide/show vanilla debug info
 - `/f3nope toggle showCustomText <true|false>` - Enable/disable custom text display
+- `/f3nope toggle enablePlaceholders <true|false>` - Enable/disable placeholder replacement
+- `/f3nope toggle showFps <true|false>` - Enable/disable FPS placeholder
+- `/f3nope toggle showPing <true|false>` - Enable/disable ping placeholder
+- `/f3nope toggle showDateTime <true|false>` - Enable/disable date/time placeholders
+- `/f3nope toggle showVersions <true|false>` - Enable/disable version placeholders
 
 #### Text Management
 - `/f3nope text add <text>` - Add a new line of custom text
@@ -46,6 +51,9 @@ All commands require OP level 2 (operator privileges).
 - `/f3nope position <x> <y>` - Set text position (in pixels)
 - `/f3nope color <hexColor>` - Set text color (e.g., FF0000 for red)
 
+#### Placeholders
+- `/f3nope placeholders` - Show all available placeholders and examples
+
 ### Configuration File
 
 The mod creates a configuration file at `config/f3nope.json` with the following options:
@@ -55,14 +63,21 @@ The mod creates a configuration file at `config/f3nope.json` with the following 
   "hideVanillaDebug": true,
   "showCustomText": true,
   "customTextLines": [
-    "F3Nope Mod",
-    "Debug info hidden",
+    "F3Nope Mod v%mod_version%",
+    "FPS: %fps% | Ping: %ping%ms",
+    "Time: %time% | Date: %date%",
+    "MC: %mc_version% | Fabric: %fabric_version%",
     "Configure with /f3nope"
   ],
   "textX": 10,
   "textY": 10,
   "textColor": 16777215,
-  "textShadow": true
+  "textShadow": true,
+  "enablePlaceholders": true,
+  "showFps": true,
+  "showPing": true,
+  "showDateTime": true,
+  "showVersions": true
 }
 ```
 
@@ -74,6 +89,35 @@ The mod creates a configuration file at `config/f3nope.json` with the following 
 - `textX`, `textY`: Position of the text on screen (pixels from top-left)
 - `textColor`: Text color as an integer (use hex converter or commands)
 - `textShadow`: Whether to render text with shadow for better visibility
+- `enablePlaceholders`: Whether to process placeholder replacement in text
+- `showFps`: Whether to replace %fps% placeholder with current FPS
+- `showPing`: Whether to replace %ping% placeholder with current ping
+- `showDateTime`: Whether to replace %time% and %date% placeholders
+- `showVersions`: Whether to replace version-related placeholders
+
+## Placeholder System
+
+F3Nope supports dynamic placeholders that get replaced with real-time information:
+
+### Available Placeholders
+
+- `%fps%` - Current frames per second
+- `%ping%` - Current network ping (multiplayer only, shows 0 in singleplayer)
+- `%time%` - Current time in HH:mm:ss format
+- `%date%` - Current date in yyyy-MM-dd format
+- `%mc_version%` - Minecraft version (e.g., "1.21.5")
+- `%fabric_version%` - Fabric Loader version
+- `%mod_version%` - F3Nope mod version
+
+### Placeholder Examples
+
+```
+/f3nope text add "FPS: %fps% | Ping: %ping%ms"
+/f3nope text add "Playing MC %mc_version% at %time%"
+/f3nope text add "F3Nope v%mod_version% running on Fabric %fabric_version%"
+```
+
+You can mix placeholders with regular text and use multiple placeholders in one line.
 
 ## Examples
 
@@ -83,12 +127,13 @@ The mod creates a configuration file at `config/f3nope.json` with the following 
 /f3nope toggle showCustomText false
 ```
 
-### Custom Server Info
+### Custom Server Info with Placeholders
 ```
 /f3nope text clear
 /f3nope text add "Welcome to MyServer!"
-/f3nope text add "Version: 1.21.5"
-/f3nope text add "Players Online: Check Tab"
+/f3nope text add "MC %mc_version% | FPS: %fps%"
+/f3nope text add "Time: %time% | Date: %date%"
+/f3nope text add "Ping: %ping%ms | Players: Check Tab"
 /f3nope position 10 10
 /f3nope color 00FF00
 ```
@@ -103,7 +148,7 @@ The mod creates a configuration file at `config/f3nope.json` with the following 
 
 ## Version Compatibility
 
-F3Nope supports **every major Minecraft version** that Fabric supports, from **1.20.2** to **1.21.5+**:
+F3Nope supports **every major Minecraft version** that Fabric supports, from **1.20.2** to **1.21.6+**:
 
 ### **Automatic Multi-Version Builds**
 
@@ -116,6 +161,7 @@ GitHub Actions automatically builds F3Nope for the following versions:
 - 1.21.3 (Bundles of Bravery)
 - 1.21.4 (Garden Awakens)
 - 1.21.5 (Spring to life)
+- 1.21.6 (Chase The Skies)
 
 ### **Installation**
 

@@ -26,6 +26,11 @@ public class F3NopeCommands {
                     .suggests((context, builder) -> {
                         builder.suggest("hideVanillaDebug");
                         builder.suggest("showCustomText");
+                        builder.suggest("enablePlaceholders");
+                        builder.suggest("showFps");
+                        builder.suggest("showPing");
+                        builder.suggest("showDateTime");
+                        builder.suggest("showVersions");
                         return builder.buildFuture();
                     })
                     .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -45,6 +50,8 @@ public class F3NopeCommands {
             .then(CommandManager.literal("color")
                 .then(CommandManager.argument("hexColor", StringArgumentType.string())
                     .executes(F3NopeCommands::executeSetColor)))
+            .then(CommandManager.literal("placeholders")
+                .executes(F3NopeCommands::executePlaceholderHelp))
             .then(CommandManager.literal("reload")
                 .executes(F3NopeCommands::executeReload))
             .then(CommandManager.literal("save")
@@ -65,6 +72,26 @@ public class F3NopeCommands {
             case "showCustomText":
                 config.showCustomText = value;
                 context.getSource().sendFeedback(() -> Text.literal("Show custom text: " + value), false);
+                break;
+            case "enablePlaceholders":
+                config.enablePlaceholders = value;
+                context.getSource().sendFeedback(() -> Text.literal("Enable placeholders: " + value), false);
+                break;
+            case "showFps":
+                config.showFps = value;
+                context.getSource().sendFeedback(() -> Text.literal("Show FPS placeholder: " + value), false);
+                break;
+            case "showPing":
+                config.showPing = value;
+                context.getSource().sendFeedback(() -> Text.literal("Show ping placeholder: " + value), false);
+                break;
+            case "showDateTime":
+                config.showDateTime = value;
+                context.getSource().sendFeedback(() -> Text.literal("Show date/time placeholders: " + value), false);
+                break;
+            case "showVersions":
+                config.showVersions = value;
+                context.getSource().sendFeedback(() -> Text.literal("Show version placeholders: " + value), false);
                 break;
             default:
                 context.getSource().sendError(Text.literal("Unknown setting: " + setting));
@@ -152,14 +179,33 @@ public class F3NopeCommands {
         return 1;
     }
 
+    private static int executePlaceholderHelp(CommandContext<ServerCommandSource> context) {
+        context.getSource().sendFeedback(() -> Text.literal("=== Available Placeholders ==="), false);
+        context.getSource().sendFeedback(() -> Text.literal("%fps% - Current FPS"), false);
+        context.getSource().sendFeedback(() -> Text.literal("%ping% - Current ping (multiplayer only)"), false);
+        context.getSource().sendFeedback(() -> Text.literal("%time% - Current time (HH:mm:ss)"), false);
+        context.getSource().sendFeedback(() -> Text.literal("%date% - Current date (yyyy-MM-dd)"), false);
+        context.getSource().sendFeedback(() -> Text.literal("%mc_version% - Minecraft version"), false);
+        context.getSource().sendFeedback(() -> Text.literal("%fabric_version% - Fabric Loader version"), false);
+        context.getSource().sendFeedback(() -> Text.literal("%mod_version% - F3Nope mod version"), false);
+        context.getSource().sendFeedback(() -> Text.literal("Example: \"FPS: %fps% | Ping: %ping%ms\""), false);
+        return 1;
+    }
+
     private static int executeInfo(CommandContext<ServerCommandSource> context) {
         F3NopeConfig config = F3Nope.getConfig();
         context.getSource().sendFeedback(() -> Text.literal("=== F3Nope Configuration ==="), false);
         context.getSource().sendFeedback(() -> Text.literal("Hide vanilla debug: " + config.hideVanillaDebug), false);
         context.getSource().sendFeedback(() -> Text.literal("Show custom text: " + config.showCustomText), false);
+        context.getSource().sendFeedback(() -> Text.literal("Enable placeholders: " + config.enablePlaceholders), false);
+        context.getSource().sendFeedback(() -> Text.literal("Show FPS: " + config.showFps), false);
+        context.getSource().sendFeedback(() -> Text.literal("Show ping: " + config.showPing), false);
+        context.getSource().sendFeedback(() -> Text.literal("Show date/time: " + config.showDateTime), false);
+        context.getSource().sendFeedback(() -> Text.literal("Show versions: " + config.showVersions), false);
         context.getSource().sendFeedback(() -> Text.literal("Text position: " + config.textX + ", " + config.textY), false);
         context.getSource().sendFeedback(() -> Text.literal("Text color: #" + Integer.toHexString(config.textColor)), false);
         context.getSource().sendFeedback(() -> Text.literal("Custom text lines: " + config.customTextLines.size()), false);
+        context.getSource().sendFeedback(() -> Text.literal("Use '/f3nope placeholders' to see available placeholders"), false);
         return 1;
     }
 }
