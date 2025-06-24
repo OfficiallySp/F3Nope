@@ -1,6 +1,6 @@
 # F3Nope
 
-[![Minecraft Versions](https://img.shields.io/badge/Minecraft-1.20.2--1.21.6+-brightgreen?style=flat-square)](https://github.com/OfficiallySp/f3nope/releases)
+[![Minecraft Versions](https://img.shields.io/badge/Minecraft-1.20.2--1.21.5+-brightgreen?style=flat-square)](https://github.com/OfficiallySp/f3nope/releases)
 [![Java](https://img.shields.io/badge/Java-17%20|%2021-orange?style=flat-square)](https://github.com/OfficiallySp/f3nope)
 [![GitHub Actions](https://img.shields.io/github/actions/workflow/status/OfficiallySp/f3nope/build.yml?style=flat-square)](https://github.com/OfficiallySp/f3nope/actions)
 [![License](https://img.shields.io/badge/License-MPL--2.0-blue?style=flat-square)](https://github.com/OfficiallySp/f3nope/blob/main/LICENSE)
@@ -148,7 +148,7 @@ You can mix placeholders with regular text and use multiple placeholders in one 
 
 ## Version Compatibility
 
-F3Nope supports **every major Minecraft version** that Fabric supports, from **1.20.2** to **1.21.6+**:
+F3Nope supports **every major Minecraft version** that Fabric supports, from **1.20.2** to **1.21.5**:
 
 ### **Automatic Multi-Version Builds**
 
@@ -161,7 +161,6 @@ GitHub Actions automatically builds F3Nope for the following versions:
 - 1.21.3 (Bundles of Bravery)
 - 1.21.4 (Garden Awakens)
 - 1.21.5 (Spring to life)
-- 1.21.6 (Chase The Skies)
 
 ### **Installation**
 
