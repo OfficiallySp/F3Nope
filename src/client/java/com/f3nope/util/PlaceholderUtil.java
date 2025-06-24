@@ -48,7 +48,7 @@ public class PlaceholderUtil {
         // Version placeholders
         if (config.showVersions) {
             if (result.contains("%mc_version%")) {
-                result = result.replace("%mc_version%", SharedConstants.getGameVersion().getName());
+                result = result.replace("%mc_version%", SharedConstants.VERSION_NAME);
             }
             if (result.contains("%fabric_version%")) {
                 String fabricVersion = FabricLoader.getInstance().getModContainer("fabricloader")
